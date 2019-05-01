@@ -3,7 +3,7 @@
 require_once ("subjects.php");
 require_once ("make_result.php");
 
-// Compulsory Subjects NameNum
+// Compulsory Subjects Name
 $ban = "Bangla";
 $eng = "English";
 $ba1st = "Bangla I";
@@ -22,13 +22,19 @@ $en2ndNum = $_REQUEST["en2ndNum"];
 $gMathNum = $_REQUEST["gMathNum"];
 $ictNum = $_REQUEST["ictNum"];
 
+// Religion Subject Code;
+$rlgnCode = $_REQUEST["rlgnCode"];
+
 // Optional Subject Codes 
 $opCode1 = $_REQUEST["opCode1"];
 $opCode2 = $_REQUEST["opCode2"];
 $opCode3 = $_REQUEST["opCode3"];
 
 // Forth Subject Code
-$frtCode = $_REQUEST["frtCode"]; 
+$frtCode = $_REQUEST["frtCode"];
+
+// Getting Religion Subect Name;
+$rlgnSub = getSubName($rlgnCode);
 
 // Getting Optional Subjects Name
 $opSub1 = getSubName($opCode1);
@@ -37,6 +43,9 @@ $opSub3 = getSubName($opCode3);
 
 // Getting Fourth Subject Name
 $frtSub = getSubName($frtCode);
+
+// Religion Subect Number
+$rlgnNum = $_REQUEST["rlgnNum"];
 
 // Optional Subjects Number
 $opNum1 = $_REQUEST["opNum1"];
@@ -54,6 +63,7 @@ $num_array = array($ban=>$banNum,
                    $eng=>$engNum,
                    $gMath=>$gMathNum,
                    $ict=>$ictNum,
+                   $rlgnSub=>$rlgnNum,
                    $opSub1=>$opNum1,
                    $opSub2=>$opNum2,
                    $opSub3=>$opNum3,
@@ -61,8 +71,44 @@ $num_array = array($ban=>$banNum,
                   );
 
 $result = get_result($num_array, $frtSub);
+$sub_size = count($result) - 2;
 
 $point = $result["point"];
 
-echo $point."<br>";
-printf("%.2f",$point);
+?>
+
+<!-- Result Page -->
+
+<?php require_once("header.php")?>
+<div class="container bg-dark text-white text-center py-4">
+  <h2 class="display-4">Your Result</h2>
+</div>
+<div class="container py-4">
+  <table class="table table-bordered">
+    <thead>
+      <tr class="bg-dark text-white">
+        <th scope="col">Subject</th>
+        <th scope="col">Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+        $count = 0;
+        foreach ($result as $sub => $grade) {
+          if($count == $sub_size) break;
+          $count++;
+          ?>
+      <tr class="<?php $grade == 'F' ? print "bg-danger text-white": print "" ?>">
+        <th scope="row"><?php echo $sub ?></th>
+        <td><?php echo $grade ?></td>
+      </tr>
+
+      <?php }?>
+      <tr class="<?php $result['gpa'] == 'F' ? print "bg-danger": print "bg-dark" ?> text-white">
+        <th scope="row">Final Result</th>
+        <td><?php echo $result["gpa"]." "; printf("( %.2f )",$result["point"]); ?></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<?php require_once("footer.php")?>

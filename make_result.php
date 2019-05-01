@@ -42,7 +42,7 @@ function get_result($array, $frtSub){
     $totall_point -=2;
   }
   if(!$fail){
-    $point = $totall_point / 7;
+    $point = $totall_point / (count($array)  - 1);
     $point >= 5? $point = 5: $point = $point;
   }
 
